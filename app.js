@@ -5,7 +5,7 @@
 // ────────────────────────────────────────
 //  API CONFIG
 // ────────────────────────────────────────
-const API = 'http://192.168.51.148:5007/api';
+const API = 'https://task-tracker-backend-cngz.onrender.com/api';
 
 function getToken()        { return localStorage.getItem('tf_token'); }
 function setToken(t)       { localStorage.setItem('tf_token', t); }
