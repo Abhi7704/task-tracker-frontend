@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+
+    <div class="login-logo">
+  <div class="login-logo-icon" style="background:none;padding:0;border-radius:0;width:auto;height:auto;">
+  <img src="Altrad Red Logo.png" style="width:56px;height:56px;object-fit:contain;border-radius:0;">
+</div>
+  <div>
+    <h1>Altrad</h1>
+    <span>Task Tracker</span>
+  </div>
+</div>
+
+    <!-- Tab switcher: Sign In / Register -->
+    <div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+  <button class="tab-btn" onclick="switchTab('register')">Manager</button>
+  <button class="tab-btn" onclick="switchTab('hr-register')">Admin</button>
+</div>
+    <!-- LOGIN FORM -->
+    <div id="tab-login">
+      <div class="alert error" id="login-error"></div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="l-email" placeholder="you@company.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="l-pass" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary" onclick="doLogin()">Sign In →</button>
+      <p style="font-size:12px;color:var(--text3);margin-top:16px;text-align:center;">
+        First time? Ask your manager to create your account.
+      </p>
+    </div>
+
+    <!-- REGISTER FORM — Manager account setup only -->
+    <div id="tab-register" style="display:none">
+      <div class="alert error" id="reg-error"></div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">
+        Create the Manager account (admin). Only one manager account exists.
+      </p>
+      <div class="field">
+        <label>Your Name</label>
+        <input type="text" id="r-name" placeholder="John Smith">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="r-email" placeholder="manager@company.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="r-pass" placeholder="Choose a strong password">
+      </div>
+      <button class="btn btn-primary" onclick="doRegisterManager()">Create Manager Account →</button>
+    </div>
+
+    <!-- HR ADMIN REGISTER FORM -->
+<div id="tab-hr-register" style="display:none">
+  <div class="alert error" id="hr-reg-error"></div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">
+    Create the Admin account. Only one Admin account exists.
+  </p>
+  <div class="field">
+    <label>Your Name</label>
+    <input type="text" id="hr-name" placeholder="Admin Name">
+  </div>
+  <div class="field">
+    <label>Email</label>
+    <input type="email" id="hr-email" placeholder="hr@company.com">
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="hr-pass" placeholder="Choose a strong password">
+  </div>
+  <button class="btn btn-primary" onclick="doRegisterHRAdmin()">Create Admin Account →</button>
+</div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     APP SCREEN (shown after login)
+══════════════════════════════════════════ -->
+<div id="app-screen" style="display:none; flex-direction:column; min-height:100vh;">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-logo">
+  <div class="header-logo-icon" style="background:none;padding:0;border-radius:0;width:auto;height:auto;">
+  <img src="Altrad Red Logo.png" style="width: 70px;height: 70px;object-fit:contain;border-radius:0;">
+</div>
+  <h1>Task Tracker</h1>
+</div>
+    <div class="header-right">
+      <!-- Notification bell -->
+      <div class="notif-btn" onclick="toggleNotif()" id="notif-btn">
+        🔔
+        <span class="notif-badge" id="notif-count" style="display:none">0</span>
+      </div>
+      <!-- User info chip -->
+      <div class="user-chip">
+        <div class="avatar" id="user-avatar"></div>
+        <div>
+          <div class="user-chip-name" id="user-name-header"></div>
+          <div class="user-chip-role" id="user-role-header"></div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+    <polyline points="16 17 21 12 16 7"/>
+    <line x1="21" y1="12" x2="9" y2="12"/>
+  </svg>
+  Logout
+</button>
+
+    </div>
+  </header>
+
+  <!-- NOTIFICATION DROPDOWN PANEL -->
+  <div class="notif-panel" id="notif-panel">
+    <div class="notif-panel-header">
+      <span class="notif-panel-title">Notifications</span>
+      <button class="btn btn-sm btn-ghost" onclick="markAllRead()">Mark all read</button>
+    </div>
+    <div id="notif-list"></div>
+  </div>
+
+  <!-- DYNAMIC MAIN CONTENT (rendered by JS) -->
+  <main id="main-content"></main>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════ -->
+
+<!-- Create Task Modal -->
+<div class="modal-overlay" id="modal-task">
+  <div class="modal">
+    <h2 class="modal-title">✦ Create New Task</h2>
+    <div class="field">
+      <label>Task Title</label>
+      <input type="text" id="t-title" placeholder="e.g. Design Homepage Mockups">
+    </div>
+    <div class="field">
+      <label>Description</label>
+      <textarea id="t-desc" placeholder="What needs to be done..."></textarea>
+    </div>
+    <div class="field">
+      <label>Assign To</label>
+      <select id="t-staff"></select>
+    </div>
+    <div class="field">
+      <label>Priority</label>
+      <select id="t-priority">
+        <option value="high">🔴 High</option>
+        <option value="medium" selected>🟡 Medium</option>
+        <option value="low">🟢 Low</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Due Date</label>
+      <input type="date" id="t-due">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-task')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="createTask()">Create Task →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Staff Modal -->
+<div class="modal-overlay" id="modal-staff">
+  <div class="modal">
+    <h2 class="modal-title">👤 Add Staff Member</h2>
+    <div class="alert error" id="staff-error"></div>
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="s-name" placeholder="Alice Johnson">
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="s-email" placeholder="alice@company.com">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="s-pass" placeholder="Set their login password">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-staff')">Cancel</button>
+      <button class="btn btn-green" style="flex:1" onclick="addStaff()">Add Staff →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Document Modal -->
+<div class="modal-overlay" id="modal-upload">
+  <div class="modal">
+    <h2 class="modal-title">📎 Upload Document</h2>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">
+      Upload a document to complete this task. After uploading, you can mark it as completed.
+    </p>
+    <div class="field">
+      <label>Select File</label>
+      <input type="file" id="upload-file" style="color:var(--text2)">
+    </div>
+    <div id="upload-task-id" style="display:none"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-upload')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="confirmUpload()">Upload & Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reassign Task Modal -->
+<div class="modal-overlay" id="modal-reassign">
+  <div class="modal">
+    <h2 class="modal-title">↔ Reassign Task</h2>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">
+      Reassigning: <strong id="ra-task-title" style="color:var(--text)"></strong>
+    </p>
+    <div id="ra-task-id" style="display:none"></div>
+    <div class="field">
+      <label>Assign To</label>
+      <select id="ra-staff"></select>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-top:-8px;margin-bottom:4px;">
+      Note: Reassigning will reset the task status back to "Assigned".
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reassign')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="confirmReassign()">Confirm Reassign →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delegate Task Modal -->
+<div class="modal-overlay" id="modal-delegate">
+  <div class="modal">
+    <h2 class="modal-title">↔ Delegate Task</h2>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">
+      Delegating: <strong id="del-task-title" style="color:var(--text)"></strong>
+    </p>
+    <div id="del-task-id" style="display:none"></div>
+    <div class="field">
+      <label>Delegate To</label>
+      <select id="del-staff"></select>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-top:-8px;margin-bottom:4px;">
+      Note: Task will be assigned to selected staff member.
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-delegate')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="confirmDelegate()">Delegate Task →</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Reset Password Modal -->
+<div class="modal-overlay" id="modal-reset-password">
+  <div class="modal">
+    <h2 class="modal-title">🔑 Reset Staff Password</h2>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">
+      Resetting password for: <strong id="rp-staff-name" style="color:var(--text)"></strong>
+    </p>
+    <div id="rp-staff-id" style="display:none"></div>
+    <div class="field">
+      <label>New Password</label>
+      <input type="password" id="rp-new-pass" placeholder="Enter new password">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reset-password')">Cancel</button>
+      <button class="btn btn-primary" style="flex:1" onclick="confirmResetPassword()">Reset Password →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Link to JavaScript file -->
+<script src="app.js"></script>
+</body>
+</html>
