@@ -16,6 +16,7 @@ const app = express();
 
 app.use(cors({ origin: '*' }));
 app.use(express.json());
+app.get('/ping', (req, res) => res.send('pong'));
 
 // Routes
 app.use('/api/auth',          require('./routes/auth'));
