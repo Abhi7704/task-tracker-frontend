@@ -640,11 +640,12 @@ const staffActionsHTML = task.status === 'completed'
      </button>
      <button class="btn-upload" title="Upload Document"
       onclick="event.stopPropagation();openUpload('${task._id}')">📎</button>
+      ${!task.delegatedFrom ? `
      <button class="btn-action" style="background:rgba(239,68,68,0.15);color:var(--red);
       border:1px solid rgba(239,68,68,0.25);"
       onclick="event.stopPropagation();openDelegate('${task._id}', '${task.title}')">
       ↔ Delegate
-     </button>`;
+     </button>` : ''}`;
 
   // Delegation info for manager
 const delegationInfoHTML = task.status === 'delegated' && task.delegatedFrom
