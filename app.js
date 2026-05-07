@@ -707,7 +707,6 @@ async function openAddTask() {
     d.setDate(d.getDate() + 7);
     document.getElementById('t-due').value = d.toISOString().split('T')[0];
     openModal('modal-task');
-    showStaffWorkload();
   } catch (err) {
     alert('Failed to load staff: ' + err.message);
   }
