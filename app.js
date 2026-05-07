@@ -1065,3 +1065,25 @@ async function showStaffWorkload() {
     box.style.display = 'none';
   }
 }
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  
+  // Login screen
+  if (document.getElementById('login-screen').style.display !== 'none') {
+    const activeTab = document.querySelector('.tab-btn.active')?.textContent.trim();
+    if (activeTab === 'Sign In') doLogin();
+    else if (activeTab === 'Manager') doRegisterManager();
+    else if (activeTab === 'Admin') doRegisterHRAdmin();
+    return;
+  }
+
+  // Modals
+  if (document.getElementById('modal-task').classList.contains('open'))        { createTask(); return; }
+  if (document.getElementById('modal-staff').classList.contains('open'))       { addStaff(); return; }
+  if (document.getElementById('modal-reassign').classList.contains('open'))    { confirmReassign(); return; }
+  if (document.getElementById('modal-delegate').classList.contains('open'))    { confirmDelegate(); return; }
+  if (document.getElementById('modal-upload').classList.contains('open'))      { confirmUpload(); return; }
+  if (document.getElementById('modal-reset-password').classList.contains('open')) { confirmResetPassword(); return; }
+});
