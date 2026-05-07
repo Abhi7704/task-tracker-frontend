@@ -1027,3 +1027,41 @@ async function confirmResetPassword() {
     alert('Failed to reset password: ' + err.message);
   }
 }
+
+async function showStaffWorkload() {
+  const staffId = document.getElementById('t-staff').value;
+  const box = document.getElementById('staff-workload');
+  if (!staffId) { box.style.display = 'none'; return; }
+
+  try {
+    const tasks = await apiFetch('/tasks');
+    const staffTasks = tasks.filter(t => t.assignedTo?._id === staffId || t.assignedTo === staffId);
+    const now = new Date();
+
+    const total    = staffTasks.length;
+    const done     = staffTasks.filter(t => t.status === 'completed').length;
+    const pending  = staffTasks.filter(t => t.status !== 'completed').length;
+    const overdue  = staffTasks.filter(t => t.status !== 'completed' && new Date(t.dueDate) < now).length;
+
+    const upcoming = staffTasks
+      .filter(t => t.status !== 'completed' && new Date(t.dueDate) >= now)
+      .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+    const nearest = upcoming.length > 0
+      ? new Date(upcoming[0].dueDate).toLocaleDateString('en-GB')
+      : 'No upcoming tasks';
+
+    document.getElementById('wl-total').textContent   = total;
+    document.getElementById('wl-done').textContent    = done;
+    document.getElementById('wl-pending').textContent = pending;
+    document.getElementById('wl-overdue').textContent = overdue;
+    document.getElementById('wl-nearest').textContent = nearest;
+
+    // Color code overdue
+    document.getElementById('wl-overdue').style.color = overdue > 0 ? '#ff4d4d' : '#aaa';
+
+    box.style.display = 'block';
+  } catch (err) {
+    box.style.display = 'none';
+  }
+}
