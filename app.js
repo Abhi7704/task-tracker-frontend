@@ -613,7 +613,7 @@ const staffActionsHTML = task.status === 'completed'
   : task.status === 'delegated'
   ? `<div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);
                color:var(--red);border-radius:8px;padding:10px 12px;font-size:12px;
-               font-weight:600;">
+               font-weight:600;margin-bottom:8px;">
        <div style="margin-bottom:4px;">↔ Task Delegated</div>
        ${task.delegatedFrom?._id === currentUser.id || task.delegatedFrom === currentUser.id
          ? `<div style="font-weight:400;color:var(--text2);">
@@ -623,6 +623,14 @@ const staffActionsHTML = task.status === 'completed'
          : `<div style="font-weight:400;color:var(--text2);">
               Delegated to you by 
               <strong style="color:var(--text)">${task.delegatedFrom?.name || 'another staff'}</strong>
+            </div>
+            <div style="margin-top:8px;">
+              <button class="btn-action btn-start"
+                onclick="event.stopPropagation();changeStatus('${task._id}','pending')">
+                ▶ Start Work
+              </button>
+              <button class="btn-upload" title="Upload Document"
+                onclick="event.stopPropagation();openUpload('${task._id}')">📎</button>
             </div>`
        }
      </div>`
