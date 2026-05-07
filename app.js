@@ -600,7 +600,7 @@ function taskCardHTML(task, isManager) {
         <div style="display:flex;align-items:center;justify-content:space-between;padding:2px 0;">
           <a class="doc-link" href="${d.url.startsWith('http') ? d.url : API.replace('/api','') + d.url}" 
   target="_blank" onclick="event.stopPropagation()">📄 ${d.name}</a>
-          ${!isManager ? `
+          ${!isManager && task.status !== 'completed' ? `
             <button onclick="event.stopPropagation();deleteDocument('${task._id}','${d._id}')"
               style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.2);
                      color:#f87171;border-radius:5px;padding:2px 7px;cursor:pointer;
