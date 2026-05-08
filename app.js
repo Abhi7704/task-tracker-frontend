@@ -1060,11 +1060,9 @@ async function showStaffWorkload() {
       ? new Date(upcoming[0].dueDate).toLocaleDateString('en-GB')
       : 'No upcoming tasks';
 
-    document.getElementById('wl-total').textContent   = total;
-    document.getElementById('wl-done').textContent    = done;
+    
     document.getElementById('wl-pending').textContent = pending;
     document.getElementById('wl-overdue').textContent = overdue;
-    document.getElementById('wl-nearest').textContent = nearest;
 
     // Color code overdue
     document.getElementById('wl-overdue').style.color = overdue > 0 ? '#ff4d4d' : '#aaa';
